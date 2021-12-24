@@ -6,4 +6,4 @@ __Сервис Mesto__
 Переписали не много функционала проекта на React!
 
 И вот ссылка на работу!!
-https://glebzhdanov.github.io/mesto/
+https://glebzhdanov.github.io/mesto-react/
