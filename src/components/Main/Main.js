@@ -4,17 +4,17 @@ import Card from '../Card/Card';
 
 function Main(props) {
 
-  const[profileName, setProfileName] = React.useState('');
-  const[profileAbout, setprofileAbout] = React.useState('');
-  const[profileAvatar, setprofileAvatar] = React.useState('')
+  const[profileName, SetProfileName] = React.useState('');
+  const[profileAbout, SetprofileAbout] = React.useState('');
+  const[profileAvatar, SetprofileAvatar] = React.useState('')
   const[cards, setCards] = React.useState([])
 
   React.useEffect(() => {
     api.getUserInfo()
     .then(res => {
-      setProfileName(res.name)
-      setprofileAbout(res.about)
-      setprofileAvatar(res.avatar)
+      SetProfileName(res.name)
+      SetprofileAbout(res.about)
+      SetprofileAvatar(res.avatar)
     })
     .catch((err) => {
       console.log(`Ошибка получения данных: ${err}`)
@@ -51,9 +51,9 @@ function Main(props) {
         <button onClick={props.handleAddPlaceClick} type="button" className="profile__button" />
       </section>
       <section className="elements">
-      {cards.map((res,i) =>
-        <Card key={i} data={res} handlePopupImage={props.handlePopupImage}></Card>
-      )}
+      {cards.map((res,_id) =>(
+        <Card key={_id} data={res} handlePopupImage={props.handlePopupImage}></Card>
+      ))}
       </section>
     </main>
   )
