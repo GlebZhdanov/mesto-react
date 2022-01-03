@@ -1,7 +1,7 @@
 .elements__image {
   display: block;
   height: 282px;
-  width: 282px;
+  width: 100%;
   background-size: cover;
   background-repeat: no-repeat;
   cursor: pointer;

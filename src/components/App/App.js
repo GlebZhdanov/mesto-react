@@ -9,7 +9,19 @@ function App() {
   const[isEditProfilePopupOpen, switchIsEditProfilePopupOpen] = React.useState(false);
   const[isAddPlacePopupOpen, switchIsAddPlacePopupOpen] = React.useState(false);
   const[isEditAvatarPopupOpen, switchIsEditAvatarPopupOpen] = React.useState(false);
-  const[selectedCard, switchSelectCard] = React.useState({dataCard: {}, open: false});
+  const[selectedCard, switchSelectCard] = React.useState({open: false, dataCard: {}});
+
+  React.useEffect(() => {
+    function closePopupEsp(e) {
+      if(e.keyCode === 27) {
+        closePopup()
+      }
+    }
+      window.addEventListener('keydown', closePopupEsp)
+    return() => {
+      window.removeEventListener('keydown', closePopupEsp)
+    }
+  })
 
   function switchProfilePopup () {
     switchIsEditProfilePopupOpen(true)
@@ -27,11 +39,11 @@ function App() {
     switchIsEditProfilePopupOpen(false)
     switchIsAddPlacePopupOpen(false)
     switchIsEditAvatarPopupOpen(false)
-    switchSelectCard({dataCard: {}, open: false});
+    switchSelectCard({open: false, dataCard: {}});
   }
 
   function switchImagePopup(data){
-    switchSelectCard({dataCard: data, open: true});
+    switchSelectCard({open: true, dataCard: data});
    }
 
   return (
