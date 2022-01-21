@@ -1,10 +1,10 @@
 import React from 'react';
-import {CurrentUserContext} from "../../contexts/CurrentUserContext";
-import PopupWithSubmit from "../PopupWithSubmit/PopupWithSubmit";
+import {CurrentUserContext} from "../contexts/CurrentUserContext";
 
 
 function Card(props) {
   const currentUser = React.useContext(CurrentUserContext);
+
   const isOwn = props.data.owner._id === currentUser._id;
   const cardDeleteButtonClassName = (
     `elements__button-delete ${!isOwn ? 'elements__button-delete_none' : 'elements__button-delete_hidden'}`
@@ -21,12 +21,12 @@ function Card(props) {
   }
 
   function openSubmitPopup() {
-    props.handlePopupWithSubmit();
+    props.handlePopupWithSubmit(props.data);
   }
   return (
     <>
       <div className="elements__group">
-        <div className="elements__image" style={{backgroundImage: `url(${props.data.link})`}} onClick={handleClick}></div>
+        <div className="elements__image" style={{backgroundImage: `url(${props.data.link})`}} onClick={handleClick} alt={props.data.name}></div>
         <button type="button" className={cardDeleteButtonClassName} onClick={openSubmitPopup}></button>
         <div className="elements__group-text">
           <h2 className="elements__title">{props.data.name}</h2>

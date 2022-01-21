@@ -1,14 +1,15 @@
 import React, {useEffect} from 'react';
-import {api}  from '../../utils/Api';
-import Header from '../Header/Header';
-import Main from '../Main/Main';
-import Footer from '../Footer/Footer';
-import ImagePopup from '../ImagePopup/ImagePopup';
-import {CurrentUserContext} from "../../contexts/CurrentUserContext";
-import EditProfilePopup from "../EditProfilePopup/EditProfilePopup";
-import EditAvatarPopup from "../EditAvatarPopup/EditAvatarPopup";
-import AddPlacePopup from "../AddPlacePopup/AddPlacePopup";
-import PopupWithSubmit from "../PopupWithSubmit/PopupWithSubmit";
+import {api}  from '../utils/Api';
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
+import ImagePopup from './ImagePopup';
+import {CurrentUserContext} from "../contexts/CurrentUserContext";
+
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
+import PopupWithSubmit from "./PopupWithSubmit";
 
 function App() {
   const[isEditProfilePopupOpen, switchIsEditProfilePopupOpen] = React.useState(false);
@@ -18,9 +19,10 @@ function App() {
   const[selectedCard, switchSelectCard] = React.useState({open: false, dataCard: {}});
   const[currentUser, setCurrentUser] = React.useState({});
   const[cards, setCards] = React.useState([]);
+  const[dataCardDelete, setDataCardDelete] = React.useState('');
 
   React.useEffect(() => {
-    api.getAllData()
+    Promise.all([api.getUserInfo(), api.getAllCards()])
       .then(([dataInfoUser, dataInfoCard]) => {
         setCurrentUser(dataInfoUser);
         setCards(dataInfoCard);
@@ -37,27 +39,22 @@ function App() {
       .catch((err) => console.log("ошибка данных пользователя: " + err))
   }
 
-  function switchImagePopup(data){
-    switchSelectCard({open: true, dataCard: data});
-  }
-
   function handleCardLike(data) {
     const isLiked = data.likes.some((i) => i._id === currentUser._id);
     api.changeLikeCardStatus(data._id, !isLiked)
       .then((newCard) => {
         setCards((state) =>
-          state.map((card) => (card._id === data._id ? newCard : card))
-        );
+          state.map((card) => (card._id === data._id ? newCard : card)));
       })
+      .catch((err) => console.log("ошибка лайка: " + err))
   }
 
-  function handleCardDelete(data) {
-    api.deleteCard(data._id)
-      .then(setCards((cards) => cards.filter((c) => c._id !== data._id && c),
+  function handleCardDelete(id) {
+    api.deleteCard(id)
+      .then(setCards((cards) => cards.filter((card) => id !== card._id),
       closePopup()))
       .catch((err) => console.log("ошибка удаленения карточки: " + err))
   }
-
 
   function handleUpdateAvatar(data) {
     api.uploadAvatar(data)
@@ -77,20 +74,28 @@ function App() {
       .catch((err) => console.log("ошибка карточки: " + err))
   }
 
-  function switchProfilePopup () {
-    switchIsEditProfilePopupOpen(true)
+  function switchProfilePopup (e) {
+    switchIsEditProfilePopupOpen(true);
+    e.target.addEventListener('keydown', closePopupEsp)
   }
 
-  function switchPlacePopup () {
-    switchIsAddPlacePopupOpen(true)
+  function switchPlacePopup (e) {
+    switchIsAddPlacePopupOpen(true);
+    e.target.addEventListener('keydown', closePopupEsp);
   }
 
-  function switchAvatarPopup () {
-    switchIsEditAvatarPopupOpen(true)
+  function switchAvatarPopup (e) {
+    switchIsEditAvatarPopupOpen(true);
+    e.target.addEventListener('keydown', closePopupEsp);
   }
 
-  function switchPopupWithSubmit () {
-    switchIsPopupWithSubmit(true)
+  function switchPopupWithSubmit (data) {
+    switchIsPopupWithSubmit(true);
+    setDataCardDelete(data)
+  }
+
+  function switchImagePopup(data){
+    switchSelectCard({open: true, dataCard: data});
   }
 
   const closePopup = () => {
@@ -101,18 +106,12 @@ function App() {
     switchSelectCard({open: false, dataCard: {}});
   }
 
-
-  React.useEffect(() => {
-    function closePopupEsp(e) {
-      if(e.keyCode === 27) {
-        closePopup()
-      }
+  function closePopupEsp(e) {
+    if(e.keyCode === 27) {
+      closePopup();
+      e.target.removeEventListener('keydown', closePopupEsp)
     }
-      window.addEventListener('keydown', closePopupEsp)
-    return() => {
-      window.removeEventListener('keydown', closePopupEsp)
-    }
-  })
+  }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -122,8 +121,7 @@ function App() {
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closePopup}
-            onUpdateUser={handlePatchUserInfo}
-          >
+            onUpdateUser={handlePatchUserInfo}>
           </EditProfilePopup>
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
@@ -140,8 +138,7 @@ function App() {
             isOpen={isPopupWithSubmit}
             onClose={closePopup}
             handleDeleteClick={handleCardDelete}
-            data={cards}
-          >
+            dataCard={dataCardDelete}>
           </PopupWithSubmit>
           <Main
             handleEditProfileClick={switchProfilePopup}
@@ -150,8 +147,7 @@ function App() {
             handlePopupImage={switchImagePopup}
             handlePopupWithSubmit={switchPopupWithSubmit}
             cards={cards}
-            onCardClick={handleCardLike}
-            handleDeleteClick={handleCardDelete}>
+            onCardClick={handleCardLike}>
           </Main>
           <Footer />
         </div>

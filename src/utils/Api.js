@@ -24,10 +24,6 @@ export class Api {
     }
   }
 
-  getAllData() {
-    return Promise.all([this.getUserInfo(), this.getAllCards()]);
-  }
-
   _chekRes(res) {
     if (res.ok) {
       return res.json()

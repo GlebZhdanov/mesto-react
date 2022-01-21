@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from '../Card/Card';
-import {CurrentUserContext} from "../../contexts/CurrentUserContext";
+import Card from './Card';
+import {CurrentUserContext} from "../contexts/CurrentUserContext";
 
 function Main(props) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -31,8 +31,6 @@ function Main(props) {
           data={data}
           handlePopupImage={props.handlePopupImage}
           onCardClick={props.onCardClick}
-          onCardDelete={props.handleDeleteClick}
-          onAddPlace={props.onAddPlace}
           handlePopupWithSubmit={props.handlePopupWithSubmit}
         ></Card>
       ))}
