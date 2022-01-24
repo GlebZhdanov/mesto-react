@@ -3,6 +3,13 @@ import React from 'react';
 
 function PopupWithSubmit(props) {
 
+  React.useEffect(() => {
+    props.closePopupEsp(props.isOpen);
+    return (
+      document.removeEventListener('keydown', props.closePopupEsp)
+    )
+  }, [props.isOpen]);
+
   function handleSubmit (e) {
     e.preventDefault();
     props.handleDeleteClick(props.dataCard._id)

@@ -1,4 +1,14 @@
+import React from "react";
+
 function ImagePopup(props) {
+
+  React.useEffect(() => {
+    props.closePopupEsp(props.data.open);
+    return (
+      document.removeEventListener('keydown', props.closePopupEsp)
+    )
+  }, [props.data.open]);
+
   return (
     <>
       <div className={`popup popup_image-card ${ props.data.open ? "popup_opened" : "" }`} onClick={props.onClose}>

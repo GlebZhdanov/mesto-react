@@ -76,17 +76,14 @@ function App() {
 
   function switchProfilePopup (e) {
     switchIsEditProfilePopupOpen(true);
-    e.target.addEventListener('keydown', closePopupEsp)
   }
 
   function switchPlacePopup (e) {
     switchIsAddPlacePopupOpen(true);
-    e.target.addEventListener('keydown', closePopupEsp);
   }
 
   function switchAvatarPopup (e) {
     switchIsEditAvatarPopupOpen(true);
-    e.target.addEventListener('keydown', closePopupEsp);
   }
 
   function switchPopupWithSubmit (data) {
@@ -106,10 +103,15 @@ function App() {
     switchSelectCard({open: false, dataCard: {}});
   }
 
-  function closePopupEsp(e) {
+  function clickPopupEsp(e) {
     if(e.keyCode === 27) {
       closePopup();
-      e.target.removeEventListener('keydown', closePopupEsp)
+    }
+  }
+
+  function closePopupEsp(popup) {
+    if(popup === true) {
+      document.addEventListener('keydown', clickPopupEsp)
     }
   }
 
@@ -121,24 +123,31 @@ function App() {
           <EditProfilePopup
             isOpen={isEditProfilePopupOpen}
             onClose={closePopup}
-            onUpdateUser={handlePatchUserInfo}>
+            onUpdateUser={handlePatchUserInfo}
+            closePopupEsp={closePopupEsp}>
           </EditProfilePopup>
           <EditAvatarPopup
             isOpen={isEditAvatarPopupOpen}
             onClose={closePopup}
-            onUpdateAvatar={handleUpdateAvatar}>
+            onUpdateAvatar={handleUpdateAvatar}
+            closePopupEsp={closePopupEsp}>
           </EditAvatarPopup>
           <AddPlacePopup
             isOpen={isAddPlacePopupOpen}
             onClose={closePopup}
-            handleAddCard={handleAddCard}>
+            handleAddCard={handleAddCard}
+            closePopupEsp={closePopupEsp}>
           </AddPlacePopup>
-          <ImagePopup data={selectedCard} onClose={closePopup}/>
+          <ImagePopup
+            data={selectedCard}
+            onClose={closePopup}
+            closePopupEsp={closePopupEsp}/>
           <PopupWithSubmit
             isOpen={isPopupWithSubmit}
             onClose={closePopup}
             handleDeleteClick={handleCardDelete}
-            dataCard={dataCardDelete}>
+            dataCard={dataCardDelete}
+            closePopupEsp={closePopupEsp}>
           </PopupWithSubmit>
           <Main
             handleEditProfileClick={switchProfilePopup}
