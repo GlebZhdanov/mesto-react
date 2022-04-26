@@ -21,3 +21,7 @@
 ##### `npm run start` – запуск devServer на http://localhost:3000/
 
 ##### `npm run build` – production сборка проекта
+
+### Статус проекта
+
+Проект завершён.
